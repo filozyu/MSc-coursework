@@ -1,4 +1,7 @@
-
+# This is a very rudimentary implementation on a specific acchitecture of convolutional neural networks using NumPy, 
+# it assumes zero-padding to be true and the stride to be one, further with the output and the input of
+# a convolutional layer have the same spatial size. The maxpooling layer has window size 2x2 and stride 2
+# Potential problems: vanishing gradients
 
 class Linear():
   '''
@@ -98,30 +101,7 @@ class ConV():
     self.padded = np.pad(self.input,((0,0),(1,1),(1,1),(0,0)),'constant') # pad zeros at the boundarys 
     self.padded_size = self.padded.shape[1] # H_in+2 = W_in+2
     
-  ######## To be checked ########
-  # def forward(self):
-  #   # Size of output: [batch_size x H_out x W_out x D] here assuming H_out = H_in = W_out = W_in
-  #   output = np.zeros((self.bs,self.H_in,self.W_in,self.filters))
-  #   # Vertical (Height)
-  #   for i in np.arange(self.padded_size-self.kernel_H + 1): # 14+2-3+1 = 14 so i takes 0-13
-  #     # Horizontal (Widith)
-  #     for j in np.arange(self.padded_size-self.kernel_W + 1):
-  #       # current_scan size: [batch_size x H x W x D_in]
-  #       # Need to expand to [batch_size x H x W x D_in x 1]
-  #       current_scan = self.padded[:,i:i+self.kernel_H,j:j+self.kernel_W,:] # +3 instead of +3-1
-  #       current_scan_expand = np.expand_dims(current_scan, axis=4) # [batch_size x H x W x D_in x 1]
-  #       # Expand kernel to [1 x H x W x D_in x D]
-  #       kernel_expand = np.expand_dims(self.kernel, axis=0)
-  #       # multiply: [batch_size x H x W x D_in x D]
-  #       # sum over axis=(1,2,3): [batch_size x D]
-  #       # plus bias: [batch_size x D]
-  #       output[:,i,j,:] = np.sum(np.sum(np.multiply(kernel_expand,current_scan_expand),axis=(1,2),keepdims=True).reshape(self.bs,self.D_in,self.filters),axis=1,keepdims=True).reshape(self.bs,self.filters)\
-  #        + np.tile(self.bias,self.bs).reshape(self.bs,self.filters)
-          
-  #   return output
-
-
-
+ 
   def forward(self):
     # Size of output: [batch_size x H_out x W_out x D] here assuming H_out = H_in = W_out = W_in
     output = np.zeros((self.bs,self.H_in,self.W_in,self.filters))
@@ -162,77 +142,23 @@ class ConV():
           dLdX[:,i,j,d] = np.sum(np.multiply(swap_flip_kernel_repeat[:,:,:,:,d],current_scan),axis=(1,2,3))
     return dLdX
 
-
-
-
-
-  ###############################
-  # def backward(self,dLdY):
-
-  #   padded_dLdY = np.pad(dLdY,((0,0),(1,1),(1,1),(0,0)),'constant')
-  #   self.padded_dLdY_size = padded_dLdY.shape[1] # H_out+2 = W_out+2
-  #   dLdX = np.zeros((self.bs,self.H_in,self.W_in,self.D_in))
-  #   flip_kernel = np.rot90(self.kernel, 2) # flipped for the first two dims (spatial)
-  #   # Vertical (Height)
-  #   for i in np.arange(self.padded_dLdY_size-self.kernel_H + 1):
-  #     # Horizontal (Widith)
-  #     for j in np.arange(self.padded_dLdY_size-self.kernel_W + 1):
-  #       # current_scan size: [100 x 3 x 3 x D], need to expand to [100 x 3 x 3 x D x 1]
-  #       current_scan = padded_dLdY[:,i:i+self.kernel_H,j:j+self.kernel_W,:] # +3 instead of +3-1
-  #       current_scan_expand = np.expand_dims(current_scan, axis=4) # [100 x 3 x 3 x D x 1]
-  #       flip_kernel_expand = np.expand_dims(flip_kernel, axis=0) # [1 x 3 x 3 x D_in x D]
-  #       swap_flip_kernel_expand = np.swapaxes(flip_kernel_expand, 3,4) # [1 x 3 x 3 x D x D_in]
-  #       # multiply: [100 x 3 x 3 x D x D_in]
-  #       dLdX[:,i,j,:] = np.sum(np.sum(np.multiply(swap_flip_kernel_expand,current_scan_expand),axis=(1,2),keepdims=True).reshape(self.bs,self.filters,self.D_in),axis=1,keepdims=True).reshape(self.bs,self.D_in)
-  #   return dLdX
-  ###############################
   def Grad_W(self,dLdY):
     # dLdY size: [batch_size x ws x ws x D]
     dLdW = np.zeros((self.kernel_H,self.kernel_W,self.D_in,self.filters))
-    window_size = dLdY.shape[1] #dLdY size: [100 x 14 x 14 x 8]
-    # for k in np.arange(self.filters):
+    window_size = dLdY.shape[1] 
     for d in np.arange(self.D_in):
-      for i in np.arange(self.padded_size-window_size+1):  # 16 - 14 + 1 = 3, i = 0-2
-        for j in np.arange(self.padded_size-window_size+1): # j = 0-2
-          current_scan = self.padded[:, i:i+window_size, j:j+window_size, d] # [100 x 14 x 14]
-          # if not d not specified, size: [100 x 14 x 14 x 3]
-          # dLdY[:,:,:,k]_expand          [100 x 14 x 14 x 1]
-          # multiply                      [100 x 14 x 14 x 3]
-          # sum axis = 0,1,2              [,3]
-          # flip_current_scan = np.rot90(current_scan,2)
+      for i in np.arange(self.padded_size-window_size+1):  
+        for j in np.arange(self.padded_size-window_size+1):
+          current_scan = self.padded[:, i:i+window_size, j:j+window_size, d] # [batch_size x ws x ws]
           for k in np.arange(self.filters):
-            # multiply: [100 x 14 x 14] * [100 x 14 x 14]
             dLdW[i,j,d,k] = np.sum(np.multiply(dLdY[:,:,:,k],current_scan)) # [bs x ws x ws] .* [bs x ws x ws]
     return dLdW
-
-  # def Grad_W(self,dLdY):
-  #   # dLdY size: [batch_size x H_out x W_out x D]
-  #   dLdW = np.zeros((self.kernel_H,self.kernel_W,self.D_in,self.filters))
-  #   window_size = dLdY.shape[1] # ws = H_out = W_out
-  #   # for k in np.arange(self.filters):
-  #   # for d in np.arange(self.D_in):
-  #   for i in np.arange(self.padded_size-window_size+1):  # 16 - 14 = 2
-  #     for j in np.arange(self.padded_size-window_size+1):
-  #       current_scan = self.padded[:, i:i+window_size, j:j+window_size, :] # [batch_size x window_size x window_size x D_in]
-  #       # dLdW: [H x W x D_in x D]
-  #       # current scan: [100 x 14 x 14 x D_in]   [100 x 14 x 14 x D_in x 1]
-  #       # dLdY: [100 x 14 x 14 x D]              [100 x 14 x 14 x 1    x D]
-  #       # multiply: [100 x 14 x 14 x D_in x D]
-  #       # sum axis=(0,1,2) : [D_in x D]
-  #       current_scan_expand = np.expand_dims(current_scan, axis=4)
-  #       dLdY_expand = np.expand_dims(dLdY, axis=3)
-  #       dLdW[i,j,:,:] = np.sum(np.multiply(dLdY_expand,current_scan_expand),axis=(0,1,2))
-  #   return dLdW
 
   def Grad_b(self,dLdY):
     # dLdY: [batch_size x H_out x W_out x D]
     dLdb = np.sum(dLdY, axis = (0,1,2)) # [1 x D]
     return dLdb 
 
-
-
-  
-######## Sound, checked both forward and backward ########  
 class MaxPool():
   '''Since all the maxpool layers in this model has windows of size [2x2] with stride 2,
      no extra definitions on stride and kernel size are needed.
@@ -266,7 +192,6 @@ class MaxPool():
     dLdY_repeat_2 = np.repeat(dLdY_repeat_1,2,axis=1).reshape(self.bs,self.H_in,self.W_in,self.D_in)
     dLdM = locations * dLdY_repeat_2
     return dLdM
-########################################################## 
 
 
 
