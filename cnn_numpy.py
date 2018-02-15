@@ -3,6 +3,8 @@
 # a convolutional layer have the same spatial size. The maxpooling layer has window size 2x2 and stride 2
 # Potential problems: vanishing gradients
 
+# This file only defines the most common layers of the Conv NNs including forward and backward pass throgh these layers
+
 class Linear():
   '''
   Linear (fully connected) layer: forward pass return output (without activation),
