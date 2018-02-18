@@ -5,6 +5,8 @@
 
 # This file only defines the most common layers of the Conv NNs including forward and backward pass throgh these layers
 
+import numpy as np
+
 class Linear():
   '''
   Linear (fully connected) layer: forward pass return output (without activation),
