@@ -6,6 +6,10 @@ from matplotlib import pyplot as plt
 
 # Python comments use a hash
 
+def multi_variate_Bernouillie():
+    pass
+
+
 def main():
     # load the data set
     Y = np.loadtxt('data/binarydigits.txt')
