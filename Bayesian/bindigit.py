@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 
 def main():
     # load the data set
-    Y = np.loadtxt('binarydigits.txt')
+    Y = np.loadtxt('data/binarydigits.txt')
     N, D = Y.shape
 
     # this is how you display one image using matplotlib,
