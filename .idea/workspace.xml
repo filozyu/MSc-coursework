@@ -11,7 +11,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
+  <component name="ProjectFrameBounds" fullScreen="true">
     <option name="x" value="-234" />
     <option name="y" value="-1080" />
     <option name="width" value="1920" />
@@ -42,6 +42,11 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/CV" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -64,15 +69,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571745295229</updated>
-      <workItem from="1571745296613" duration="366000" />
+      <workItem from="1571745296613" duration="535000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="366000" />
+    <option name="totallyTimeSpent" value="535000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-234" y="-1080" width="1920" height="1080" extended-state="6" />
+    <frame x="-234" y="-1080" width="1920" height="1080" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
