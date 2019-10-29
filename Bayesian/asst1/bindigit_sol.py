@@ -17,7 +17,6 @@ def main(alpha, beta):
     # load the data set
     Y = np.loadtxt('data/binarydigits.txt')
 
-
     plt.figure(figsize=(5, 5))
 
     q_ml = ML_mv_Bernouillie(Y)
@@ -40,11 +39,20 @@ def main(alpha, beta):
     plt.axis('off')
     plt.title("MAP")
 
-    plt.savefig("./mlmap.png")
+    plt.savefig("./mlmap_mat.png")
+
+    plt.figure()
+    plt.plot(q_map, "cx")
+    plt.plot(q_ml, "mx")
+    plt.legend(("MAP", "ML"))
+    plt.title("ML v MAP")
+
+    plt.savefig("./mlmap_scatter.png")
 
 
 if __name__ == "__main__":
     alpha = 3
     beta = 3
     main(alpha, beta)
+
     print("Done!")
