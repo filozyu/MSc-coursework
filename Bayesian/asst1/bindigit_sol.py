@@ -39,7 +39,7 @@ def main(alpha, beta):
     plt.axis('off')
     plt.title("MAP")
 
-    plt.savefig("./mlmap_mat.png")
+    plt.savefig("data/mlmap_mat.png")
 
     plt.figure()
     plt.plot(q_map, "cx")
@@ -47,7 +47,7 @@ def main(alpha, beta):
     plt.legend(("MAP", "ML"))
     plt.title("ML v MAP")
 
-    plt.savefig("./mlmap_scatter.png")
+    plt.savefig("data/mlmap_scatter.png")
 
 
 if __name__ == "__main__":
